@@ -17,6 +17,16 @@ public class BookingDto {
 
     }
 
+    public BookingDto(long ticketId, long flightId) {
+        this.ticketId = ticketId;
+        this.flightId = flightId;
+    }
+
+    public BookingDto(long ticketId, List<String> passengerNames) {
+        this.ticketId = ticketId;
+        this.passengerNames = passengerNames;
+    }
+
     public long getTicketId() {
         return ticketId;
     }

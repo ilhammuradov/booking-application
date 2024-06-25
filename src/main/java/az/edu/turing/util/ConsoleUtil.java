@@ -6,6 +6,7 @@ import az.edu.turing.dao.BookingDao;
 import az.edu.turing.dao.FlightsDao;
 import az.edu.turing.dao.impl.BookingFileDao;
 import az.edu.turing.dao.impl.FlightsFileDao;
+import az.edu.turing.dao.impl.FlightsPostgreDao;
 import az.edu.turing.entity.BookingEntity;
 import az.edu.turing.exception.InvalidMenuActionException;
 import az.edu.turing.model.BookingDto;
@@ -22,7 +23,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class ConsoleUtil {
-    FlightsDao flightsDao = new FlightsFileDao(new ObjectMapper().registerModule(new JavaTimeModule()));
+    FlightsDao flightsDao = //new FlightsPostgreDao();
+            new FlightsFileDao(new ObjectMapper().registerModule(new JavaTimeModule()));
     FlightsService flightsService = new FlightsServiceImpl(flightsDao);
     FlightsController flightsController = new FlightsController(flightsService);
 
