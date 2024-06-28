@@ -1,7 +1,8 @@
 package az.edu.turing.dao.impl;
 
-import az.edu.turing.dao.BookingDao;
-import az.edu.turing.entity.BookingEntity;
+import az.edu.turing.dao.BookingRepository;
+import az.edu.turing.dao.entity.BookingEntity;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -10,15 +11,13 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-public class BookingFileDao extends BookingDao {
+public class BookingFileRepository extends BookingRepository {
 
     private static final String RESOURCE_PATH = "src/main/java/az/edu/turing/resource/";
     private static final String BOOKINGS_FILE_PATH = RESOURCE_PATH.concat("bookings.bean");
     private final ObjectMapper objectMapper;
 
-    public BookingFileDao(ObjectMapper objectMapper) {
+    public BookingFileRepository(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
