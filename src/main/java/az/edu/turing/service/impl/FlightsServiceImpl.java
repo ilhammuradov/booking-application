@@ -1,70 +1,64 @@
 package az.edu.turing.service.impl;
 
-import az.edu.turing.dao.FlightsDao;
-import az.edu.turing.entity.FlightsEntity;
+import az.edu.turing.dao.FlightsRepository;
+import az.edu.turing.dao.entity.FlightsEntity;
 import az.edu.turing.model.FlightsDto;
 import az.edu.turing.service.FlightsService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class FlightsServiceImpl implements FlightsService {
 
-    private final FlightsDao flightsDao;
+    private final FlightsRepository flightsRepository;
 
-    public FlightsServiceImpl(FlightsDao flightsDao) {
-        this.flightsDao = flightsDao;
+    public FlightsServiceImpl(FlightsRepository flightsRepository) {
+        this.flightsRepository = flightsRepository;
     }
 
     @Override
     public void createFlights(FlightsDto flightsDto) {
-        FlightsEntity flightsEntity = new FlightsEntity(
-                flightsDto.getDepartureDateTime(),
-                flightsDto.getDestination(),
-                flightsDto.getLocation(),
-                flightsDto.getSeats(),
-                flightsDto.getFlightId());
-        ArrayList<FlightsEntity> flightForAdd = new ArrayList<>(flightsDao.getAll());
+        FlightsEntity flightsEntity = new FlightsEntity(flightsDto.getDepartureDateTime(), flightsDto.getDestination(), flightsDto.getLocation(), flightsDto.getSeats(), flightsDto.getFlightId());
+        ArrayList<FlightsEntity> flightForAdd = new ArrayList<>();
         flightForAdd.add(flightsEntity);
-        flightsDao.save(flightForAdd);
+        flightsRepository.save(flightForAdd);
     }
 
     @Override
     public Collection<FlightsDto> getAllFlights() {
-        Collection<FlightsEntity> flights = flightsDao.getAll();
+        Collection<FlightsEntity> flights = flightsRepository.getAll();
         ArrayList<FlightsDto> flightsDto = new ArrayList<>();
         flights.stream().forEach(flightsEntity -> flightsDto.add(new FlightsDto(flightsEntity.getFlightId(), flightsEntity.getDepartureDateTime(), flightsEntity.getDestination(), flightsEntity.getLocation(), flightsEntity.getSeats())));
         return flightsDto;
     }
+
     @Override
-    public List<FlightsDto> getAllFlightsByDestination(String destination) {
-        return getAllFlights().stream().filter(flightsDto -> flightsDto.getDestination().equalsIgnoreCase(destination)).toList();
+    public Collection<FlightsEntity> getAllFlightsByDestination(String destination) {
+        Predicate<FlightsEntity> predicate = flightsEntity -> flightsEntity.getDestination().equalsIgnoreCase(destination);
+        return flightsRepository.findAllBy(predicate);
     }
+
     @Override
-    public List<FlightsDto> getAllFlightsByLocation(String location) {
-        return getAllFlights().stream().filter(flightsDto -> flightsDto.getLocation().equalsIgnoreCase(location)).toList();
+    public Collection<FlightsEntity> getAllFlightsByLocation(String location) {
+        Predicate<FlightsEntity> predicate = flightsEntity -> flightsEntity.getLocation().equalsIgnoreCase(location);
+        return flightsRepository.findAllBy(predicate);
     }
+
+
     @Override
-    public List<FlightsDto> getFlightInfoByFlightId(long flightId) {
-        Collection<FlightsDto> flightsEntities=getAllFlights();
-        return getAllFlights().stream().filter(flightsDto -> flightsDto.getFlightId() == flightId).toList();
+    public Optional<FlightsEntity> getOneFlightByFlightId(long flightId) {
+        Predicate<FlightsEntity> predicate = flightsEntity -> flightsEntity.getFlightId() == flightId;
+        return flightsRepository.findOneBy(predicate);
     }
+
     @Override
-    public Optional<FlightsDto> getOneFlightByFlightId(long flightId) {
-        return getAllFlights().stream().filter(flightsDto -> flightsDto.getFlightId() == flightId).findFirst();
-    }
-    @Override
-    public List<FlightsDto> flightsInNext24Hours(String location, LocalDateTime dateTime) {
+    public Collection<FlightsDto> flightsInNext24Hours(String location, LocalDateTime dateTime) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime next24Hours = now.plusHours(24);
         Collection<FlightsDto> allFlights = getAllFlights();
-        return allFlights.stream()
-                .filter(flightsDto -> flightsDto.getLocation().equalsIgnoreCase(location)
-                        && flightsDto.getDepartureDateTime().isAfter(now)
-                        && flightsDto.getDepartureDateTime().isBefore(next24Hours))
-                .toList();
+        return allFlights.stream().filter(flightsDto -> flightsDto.getLocation().equalsIgnoreCase(location) && flightsDto.getDepartureDateTime().isAfter(now) && flightsDto.getDepartureDateTime().isBefore(next24Hours)).toList();
     }
 }
