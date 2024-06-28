@@ -1,11 +1,12 @@
 package az.edu.turing.controller;
 
-import az.edu.turing.entity.FlightsEntity;
+import az.edu.turing.dao.entity.FlightsEntity;
 import az.edu.turing.model.FlightsDto;
 import az.edu.turing.service.FlightsService;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.Optional;
 
 public class FlightsController {
     private final FlightsService flightService;
@@ -22,19 +23,19 @@ public class FlightsController {
         return flightService.getAllFlights();
     }
 
-    public List<FlightsDto> getAllFlightsByDestination(String destination) {
+    public Collection<FlightsEntity> getAllFlightsByDestination(String destination) {
         return flightService.getAllFlightsByDestination(destination);
     }
-    public List<FlightsDto> getAllFlightsByLocation(String location) {
+
+    public Collection<FlightsEntity> getAllFlightsByLocation(String location) {
         return flightService.getAllFlightsByLocation(location);
     }
-    public List<FlightsDto> getFlightInfoByFlightId(long flightId) {
-        return flightService.getFlightInfoByFlightId(flightId);
-    }
-    public Optional<FlightsDto> getOneFlightByFlightId(long flightId) {
+
+    public Optional<FlightsEntity> getOneFlightByFlightId(long flightId) {
         return flightService.getOneFlightByFlightId(flightId);
     }
-    public List<FlightsDto> getOnlineBoard(String location, LocalDateTime dateTime) {
+
+    public Collection<FlightsDto> getOnlineBoard(String location, LocalDateTime dateTime) {
         return flightService.flightsInNext24Hours(location, dateTime);
     }
 }

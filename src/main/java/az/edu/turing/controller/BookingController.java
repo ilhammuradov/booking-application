@@ -1,6 +1,6 @@
 package az.edu.turing.controller;
 
-import az.edu.turing.entity.BookingEntity;
+import az.edu.turing.dao.entity.BookingEntity;
 import az.edu.turing.model.BookingDto;
 import az.edu.turing.service.BookingService;
 
@@ -13,11 +13,11 @@ public class BookingController {
         this.bookingService = bookingService;
     }
 
-    public void searchAndBookFlight(BookingDto bookingDto,int numberofseats) {
+    public void searchAndBookFlight(BookingDto bookingDto, int numberofseats) {
         bookingService.bookFlight(bookingDto, numberofseats);
     }
 
-    public  void cancelBooking(long ticketId) {
+    public void cancelBooking(long ticketId) {
         bookingService.cancelBooking(ticketId);
     }
 
