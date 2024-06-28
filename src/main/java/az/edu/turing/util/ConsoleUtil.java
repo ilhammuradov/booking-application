@@ -2,46 +2,39 @@ package az.edu.turing.util;
 
 import az.edu.turing.controller.BookingController;
 import az.edu.turing.controller.FlightsController;
-import az.edu.turing.dao.BookingDao;
-import az.edu.turing.dao.FlightsDao;
-import az.edu.turing.dao.impl.BookingFileDao;
-import az.edu.turing.dao.impl.FlightsFileDao;
-import az.edu.turing.dao.impl.FlightsPostgreDao;
-import az.edu.turing.entity.BookingEntity;
+import az.edu.turing.dao.BookingRepository;
+import az.edu.turing.dao.FlightsRepository;
+import az.edu.turing.dao.entity.BookingEntity;
+import az.edu.turing.dao.entity.FlightsEntity;
+import az.edu.turing.dao.impl.BookingPostgreRepository;
+import az.edu.turing.dao.impl.FlightsPostgreRepository;
 import az.edu.turing.exception.InvalidMenuActionException;
 import az.edu.turing.model.BookingDto;
 import az.edu.turing.model.FlightsDto;
 import az.edu.turing.service.BookingService;
 import az.edu.turing.service.FlightsService;
-import az.edu.turing.service.impl.BookingServiceImpl;
+import az.edu.turing.service.impl.BookingServicePostgresImpl;
 import az.edu.turing.service.impl.FlightsServiceImpl;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class ConsoleUtil {
-    FlightsDao flightsDao = //new FlightsPostgreDao();
-            new FlightsFileDao(new ObjectMapper().registerModule(new JavaTimeModule()));
+    FlightsRepository flightsDao = new FlightsPostgreRepository();
+    //new FlightsFileDao(new ObjectMapper().registerModule(new JavaTimeModule()));
     FlightsService flightsService = new FlightsServiceImpl(flightsDao);
     FlightsController flightsController = new FlightsController(flightsService);
 
-    BookingDao bookingDao = new BookingFileDao(new ObjectMapper().registerModule(new JavaTimeModule()));
-    BookingService bookingService = new BookingServiceImpl(bookingDao,flightsDao);
+    BookingRepository bookingDao = new BookingPostgreRepository();
+    // new BookingFileDao(new ObjectMapper().registerModule(new JavaTimeModule()));
+    BookingService bookingService = new BookingServicePostgresImpl(bookingDao, flightsDao);
+    // new BookingServiceImpl(bookingDao,flightsDao);
     BookingController bookingController = new BookingController(bookingService);
 
 
     public void displayMainMenu() {
-        System.out.println("---Main Menu---\n" +
-                "1. Online-board\n" +
-                "2. Show flight info\n" +
-                "3. Search and book a flight\n" +
-                "4. Cancel booking\n" +
-                "5. My flights\n" +
-                "6. Exit\n" +
-                "Enter your choice: ");
+        System.out.println("---Main Menu---\n" + "1. Online-board\n" + "2. Show flight info\n" + "3. Search and book a flight\n" + "4. Cancel booking\n" + "5. My flights\n" + "6. Exit\n" + "Enter your choice: ");
 
     }
 
@@ -88,51 +81,58 @@ public class ConsoleUtil {
     public void displayOnlineBoard() {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter location: ");
-        String location = scanner.nextLine();
+        String location = scanner.nextLine().trim();
+
+        if (location.isEmpty()) {
+            System.out.println("Location cannot be empty. Please enter a valid location.");
+            return;
+        }
+
         LocalDateTime dateTime = LocalDateTime.now();
-        List<FlightsDto> flights = flightsController.getOnlineBoard(location, dateTime);
-        if (flights != null) {
+        Collection<FlightsDto> flights = flightsController.getOnlineBoard(location, dateTime);
+
+        if (flights != null && !flights.isEmpty()) {
             for (FlightsDto flight : flights) {
                 System.out.println(flight.getFlightId() + " - " + flight.getDestination() + " - " + flight.getDepartureDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
             }
         } else {
-            System.out.println("Flight not found!");
+            System.out.println("No flights found for the specified location and time.");
         }
     }
+
 
     public void showFlightInfo() {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter flight ID: ");
         try {
             long id = scanner.nextLong();
-            List<FlightsDto> flights = flightsController.getFlightInfoByFlightId(id);
-            if (flights != null) {
-                for (FlightsDto f : flights) {
-                    System.out.println(f.getDepartureDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) + " - " + f.getDestination() + " - " + f.getSeats());
-                }
+            Optional<FlightsEntity> flight = flightsController.getOneFlightByFlightId(id);
+
+            System.out.println("===== Flight Info =====");
+            if (flight.isPresent()) {
+                FlightsEntity f = flight.get();
+                System.out.println(f.getDepartureDateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) + " - " + f.getDestination() + " - " + f.getSeats());
             } else {
                 System.out.println("Flight not found!");
             }
         } catch (InputMismatchException e) {
-            System.out.println("Enter valid flight Id");
+            System.out.println("Enter a valid flight ID.");
         }
-
-        System.out.println("===== Flight Info =====");
-
     }
+
 
     public void searchAndBookFlight() {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter destination: ");
         String destination = scanner.nextLine();
 
-        List<FlightsDto> foundFlights = flightsController.getAllFlightsByDestination(destination);
+        Collection<FlightsEntity> foundFlights = flightsController.getAllFlightsByDestination(destination);
 
         if (foundFlights.isEmpty()) {
             System.out.println("No flights found for the specified destination.");
         } else {
             System.out.println("Found Flights:");
-            for (FlightsDto flight : foundFlights) {
+            for (FlightsEntity flight : foundFlights) {
                 System.out.println(flight.getFlightId() + ". " + flight);
             }
 
@@ -144,7 +144,7 @@ public class ConsoleUtil {
                 return;
             }
 
-            FlightsDto selectedFlight = flightsController.getOneFlightByFlightId(flightId).orElse(null);
+            FlightsEntity selectedFlight = flightsController.getOneFlightByFlightId(flightId).orElse(null);
             if (selectedFlight == null) {
                 System.out.println("Invalid flight ID. Returning to the main menu.");
                 return;

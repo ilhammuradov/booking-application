@@ -12,58 +12,62 @@ public class FlightsDto {
 
     public FlightsDto() {
     }
+
     public FlightsDto(long flightId, LocalDateTime departureDateTime, String destination, int seats) {
-        this.flightId =flightId;
+        this.flightId = flightId;
         this.departureDateTime = departureDateTime;
         this.destination = destination;
         this.seats = seats;
     }
-    public FlightsDto(long flightId,LocalDateTime departureDateTime, String destination, String location, int seats) {
+
+    public FlightsDto(long flightId, LocalDateTime departureDateTime, String destination, String location, int seats) {
         this.flightId = flightId;
         this.departureDateTime = departureDateTime;
         this.destination = destination;
         this.location = location;
         this.seats = seats;
     }
+
     public LocalDateTime getDepartureDateTime() {
         return departureDateTime;
-    }
-
-    public String getDestination() {
-        return destination;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public int getSeats() {
-        return seats;
-    }
-
-    public long getFlightId() {
-        return flightId;
     }
 
     public void setDepartureDateTime(LocalDateTime departureDateTime) {
         this.departureDateTime = departureDateTime;
     }
 
+    public String getDestination() {
+        return destination;
+    }
+
     public void setDestination(String destination) {
         this.destination = destination;
+    }
+
+    public String getLocation() {
+        return location;
     }
 
     public void setLocation(String location) {
         this.location = location;
     }
 
+    public int getSeats() {
+        return seats;
+    }
+
     public void setSeats(int seats) {
         this.seats = seats;
+    }
+
+    public long getFlightId() {
+        return flightId;
     }
 
     public void setFlightId(long flightId) {
         this.flightId = flightId;
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -79,12 +83,6 @@ public class FlightsDto {
 
     @Override
     public String toString() {
-        return "FlightsDto{" +
-                "departureDateTime=" + departureDateTime +
-                ", destination='" + destination + '\'' +
-                ", location='" + location + '\'' +
-                ", seats=" + seats +
-                ", flightId=" + flightId +
-                '}';
+        return "FlightsDto{" + "departureDateTime=" + departureDateTime + ", destination='" + destination + '\'' + ", location='" + location + '\'' + ", seats=" + seats + ", flightId=" + flightId + '}';
     }
 }
