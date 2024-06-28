@@ -1,4 +1,4 @@
-package az.edu.turing.entity;
+package az.edu.turing.dao.entity;
 
 import java.io.*;
 import java.util.List;
@@ -19,6 +19,22 @@ public final class BookingEntity {
         this.flightId = flightId;
         this.passengerNames = passengerNames;
         saveMaxId(MAX_ID);
+    }
+
+    private static long loadMaxId() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/java/az/edu/turing/resource/max_id.txt"))) {
+            return Long.parseLong(reader.readLine());
+        } catch (IOException | NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    private static void saveMaxId(long maxId) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/java/az/edu/turing/resource/max_id.txt"))) {
+            writer.write(Long.toString(maxId));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public long getTicketId() {
@@ -61,21 +77,5 @@ public final class BookingEntity {
     @Override
     public int hashCode() {
         return Objects.hash(ticketId, flightId, passengerNames);
-    }
-
-    private static long loadMaxId() {
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/java/az/edu/turing/resource/max_id.txt"))) {
-            return Long.parseLong(reader.readLine());
-        } catch (IOException | NumberFormatException e) {
-            return 0;
-        }
-    }
-
-    private static void saveMaxId(long maxId) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/java/az/edu/turing/resource/max_id.txt"))) {
-            writer.write(Long.toString(maxId));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

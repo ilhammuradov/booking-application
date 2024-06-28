@@ -1,16 +1,15 @@
 package az.edu.turing.dao;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public interface DAO<T> {
+public interface Repository<T> {
     boolean save(Collection<T> t);
 
     Collection<T> getAll();
 
-    void delete(long flightId);
+    void delete(long Id);
 
     Optional<T> findOneBy(Predicate<T> predicate);
 

@@ -1,20 +1,22 @@
 package az.edu.turing.dao.impl;
 
-import az.edu.turing.dao.FlightsDao;
-import az.edu.turing.entity.FlightsEntity;
-
-import java.io.*;
-import java.util.*;
-import java.util.function.Predicate;
-
+import az.edu.turing.dao.FlightsRepository;
+import az.edu.turing.dao.entity.FlightsEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class FlightsFileDao extends FlightsDao {
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.function.Predicate;
+
+public class FlightsFileRepository extends FlightsRepository {
     private static final String RESOURCE_PATH = "src/main/java/az/edu/turing/resource/";
     private static final String FLIGHTS_FILE_PATH = RESOURCE_PATH.concat("flights.json");
     private final ObjectMapper objectMapper;
 
-    public FlightsFileDao(ObjectMapper objectMapper) {
+    public FlightsFileRepository(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
@@ -65,5 +67,9 @@ public class FlightsFileDao extends FlightsDao {
     @Override
     public Collection<FlightsEntity> findAllBy(Predicate<FlightsEntity> predicate) {
         return getAll().stream().filter(predicate).toList();
+    }
+
+    @Override
+    public void update(FlightsEntity flightsEntity) {
     }
 }
