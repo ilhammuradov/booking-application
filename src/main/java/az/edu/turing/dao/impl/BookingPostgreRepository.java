@@ -55,7 +55,7 @@ public class BookingPostgreRepository extends BookingRepository {
                 return true;
             } catch (SQLException e) {
                 if (con != null) {
-                    con.rollback(); // Rollback transaction in case of error
+                    con.rollback();
                 }
                 e.printStackTrace();
                 return false;
