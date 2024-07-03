@@ -4,6 +4,8 @@ import az.edu.turing.dao.BookingRepository;
 import az.edu.turing.dao.FlightsRepository;
 import az.edu.turing.dao.entity.BookingEntity;
 import az.edu.turing.dao.entity.FlightsEntity;
+import az.edu.turing.exception.BookingNotFoundException;
+import az.edu.turing.exception.FlightNotFoundException;
 import az.edu.turing.exception.InvalidMenuActionException;
 import az.edu.turing.model.BookingDto;
 import az.edu.turing.service.BookingService;
@@ -29,7 +31,7 @@ public class BookingServicePostgresImpl implements BookingService {
         Optional<FlightsEntity> f = flightsRepository.findOneBy(predicate);
 
         if (f.isEmpty()) {
-            throw new InvalidMenuActionException("No such flight");
+            throw new FlightNotFoundException("No such flight");
         } else {
             int seats = f.get().getSeats();
             if (numberofseats > seats) throw new InvalidMenuActionException("Number of seats exceeded");
@@ -73,6 +75,11 @@ public class BookingServicePostgresImpl implements BookingService {
     @Override
     public Collection<BookingEntity> getBookingsByPassenger(String fullName) {
         Predicate<BookingEntity> predicate = bookingEntity -> bookingEntity.getPassengerNames().contains(fullName);
-        return bookingRepository.findAllBy(predicate);
+        Collection<BookingEntity> bookings = bookingRepository.findAllBy(predicate);
+        if (!bookings.isEmpty()) {
+            return bookings;
+        } else {
+            throw new BookingNotFoundException("No such passenger");
+        }
     }
 }

@@ -21,20 +21,29 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class ConsoleUtil {
-    FlightsRepository flightsDao = new FlightsPostgreRepository();
+    FlightsRepository flightsRepository = new FlightsPostgreRepository();
     //new FlightsFileDao(new ObjectMapper().registerModule(new JavaTimeModule()));
-    FlightsService flightsService = new FlightsServiceImpl(flightsDao);
+    FlightsService flightsService = new FlightsServiceImpl(flightsRepository);
     FlightsController flightsController = new FlightsController(flightsService);
 
-    BookingRepository bookingDao = new BookingPostgreRepository();
+    BookingRepository bookingRepository = new BookingPostgreRepository();
     // new BookingFileDao(new ObjectMapper().registerModule(new JavaTimeModule()));
-    BookingService bookingService = new BookingServicePostgresImpl(bookingDao, flightsDao);
+    BookingService bookingService = new BookingServicePostgresImpl(bookingRepository, flightsRepository);
     // new BookingServiceImpl(bookingDao,flightsDao);
     BookingController bookingController = new BookingController(bookingService);
 
 
     public void displayMainMenu() {
-        System.out.println("---Main Menu---\n" + "1. Online-board\n" + "2. Show flight info\n" + "3. Search and book a flight\n" + "4. Cancel booking\n" + "5. My flights\n" + "6. Exit\n" + "Enter your choice: ");
+        System.out.println("""
+                ---Main Menu---
+                1. Online-board
+                2. Show flight info
+                3. Search and book a flight
+                4. Cancel booking
+                5. My flights
+                6. Exit
+                Enter your choice:\s""");
+
 
     }
 

@@ -2,6 +2,7 @@ package az.edu.turing.service.impl;
 
 import az.edu.turing.dao.FlightsRepository;
 import az.edu.turing.dao.entity.FlightsEntity;
+import az.edu.turing.exception.FlightNotFoundException;
 import az.edu.turing.model.FlightsDto;
 import az.edu.turing.service.FlightsService;
 
@@ -60,5 +61,30 @@ public class FlightsServiceImpl implements FlightsService {
         LocalDateTime next24Hours = now.plusHours(24);
         Collection<FlightsDto> allFlights = getAllFlights();
         return allFlights.stream().filter(flightsDto -> flightsDto.getLocation().equalsIgnoreCase(location) && flightsDto.getDepartureDateTime().isAfter(now) && flightsDto.getDepartureDateTime().isBefore(next24Hours)).toList();
+    }
+
+    @Override
+    public void update(FlightsEntity f) {
+        Predicate<FlightsEntity> predicate = flightsEntity -> flightsEntity.getFlightId() == f.getFlightId();
+        Optional<FlightsEntity> flightOptional = flightsRepository.findOneBy(predicate);
+        if (flightOptional.isPresent()) {
+            FlightsEntity flight = flightOptional.get();
+
+            flight.setDepartureDateTime(f.getDepartureDateTime());
+            flight.setDestination(f.getDestination());
+            flight.setLocation(f.getLocation());
+            flight.setSeats(f.getSeats());
+
+            flightsRepository.update(flight);
+        } else {
+            throw new FlightNotFoundException("Invalid flight id");
+        }
+    }
+
+    @Override
+    public void delete(long flightId) {
+        if (getOneFlightByFlightId(flightId).isPresent()) {
+            flightsRepository.delete(flightId);
+        }else throw new FlightNotFoundException("Invalid flight id");
     }
 }

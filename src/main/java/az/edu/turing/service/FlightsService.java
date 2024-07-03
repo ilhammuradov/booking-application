@@ -19,4 +19,8 @@ public interface FlightsService {
     Optional<FlightsEntity> getOneFlightByFlightId(long flightId);
 
     Collection<FlightsDto> flightsInNext24Hours(String location, LocalDateTime dateTime);
+
+    void update(FlightsEntity flightsEntity);
+
+    void delete(long flightId);
 }
