@@ -1,0 +1,15 @@
+version: '3.3'
+
+services:
+  booking-app:
+    container_name: booking-app
+    image: booking-app
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: Dockerfile
+    tty: true
+    stdin_open: true
+    network_mode: host

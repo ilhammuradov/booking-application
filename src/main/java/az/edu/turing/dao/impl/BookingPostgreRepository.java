@@ -16,7 +16,7 @@ public class BookingPostgreRepository extends BookingRepository {
 
     private final String url = "jdbc:postgresql://localhost:5432/Booking-Application";
     private final String user = "postgres";
-    private final String password = "1643";
+    private final String password = "postgres";
     DBProperties db;
 
     public BookingPostgreRepository() {

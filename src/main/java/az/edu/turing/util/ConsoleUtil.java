@@ -79,8 +79,8 @@ public class ConsoleUtil {
                     default:
                         throw new InvalidMenuActionException("Invalid choice! Please try again.");
                 }
-            } catch (InvalidMenuActionException e) {
-                System.out.println(e.getMessage());
+            } catch (InvalidMenuActionException | NoSuchElementException e) {
+                System.out.println("test");
             }
         } while (choice != 6);
 
