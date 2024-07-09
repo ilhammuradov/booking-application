@@ -12,14 +12,14 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.function.Predicate;
 
-public class BookingPostgreRepository extends BookingRepository {
+public class BookingPostgresRepository extends BookingRepository {
 
     private final String url = "jdbc:postgresql://localhost:5430/Booking-Application";
     private final String user = "postgres";
     private final String password = "postgres";
     DBProperties db;
 
-    public BookingPostgreRepository() {
+    public BookingPostgresRepository() {
         this.db = new DBProperties(url, user, password);
     }
 

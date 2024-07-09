@@ -6,7 +6,7 @@ import az.edu.turing.dao.BookingRepository;
 import az.edu.turing.dao.FlightsRepository;
 import az.edu.turing.dao.entity.BookingEntity;
 import az.edu.turing.dao.entity.FlightsEntity;
-import az.edu.turing.dao.impl.BookingPostgreRepository;
+import az.edu.turing.dao.impl.BookingPostgresRepository;
 import az.edu.turing.dao.impl.FlightsPostgreRepository;
 import az.edu.turing.exception.InvalidMenuActionException;
 import az.edu.turing.model.BookingDto;
@@ -26,7 +26,7 @@ public class ConsoleUtil {
     FlightsService flightsService = new FlightsServiceImpl(flightsRepository);
     FlightsController flightsController = new FlightsController(flightsService);
 
-    BookingRepository bookingRepository = new BookingPostgreRepository();
+    BookingRepository bookingRepository = new BookingPostgresRepository();
     // new BookingFileDao(new ObjectMapper().registerModule(new JavaTimeModule()));
     BookingService bookingService = new BookingServicePostgresImpl(bookingRepository, flightsRepository);
     // new BookingServiceImpl(bookingDao,flightsDao);
