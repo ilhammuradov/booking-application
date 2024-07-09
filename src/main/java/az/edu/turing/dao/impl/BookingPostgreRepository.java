@@ -14,7 +14,7 @@ import java.util.function.Predicate;
 
 public class BookingPostgreRepository extends BookingRepository {
 
-    private final String url = "jdbc:postgresql://localhost:5432/Booking-Application";
+    private final String url = "jdbc:postgresql://localhost:5430/Booking-Application";
     private final String user = "postgres";
     private final String password = "postgres";
     DBProperties db;
@@ -44,7 +44,7 @@ public class BookingPostgreRepository extends BookingRepository {
 
                         for (String passengerName : booking.getPassengerNames()) {
                             insertPassengerPst.setLong(1, bookingId);
-                            insertPassengerPst.setString(2, passengerName);
+                            insertPassengerPst.setString(2, passengerName.toUpperCase());
                             insertPassengerPst.addBatch();
                         }
                     }

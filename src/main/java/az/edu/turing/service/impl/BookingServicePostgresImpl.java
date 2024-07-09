@@ -74,7 +74,7 @@ public class BookingServicePostgresImpl implements BookingService {
 
     @Override
     public Collection<BookingEntity> getBookingsByPassenger(String fullName) {
-        Predicate<BookingEntity> predicate = bookingEntity -> bookingEntity.getPassengerNames().contains(fullName);
+        Predicate<BookingEntity> predicate = bookingEntity -> bookingEntity.getPassengerNames().contains(fullName.toUpperCase());
         Collection<BookingEntity> bookings = bookingRepository.findAllBy(predicate);
         if (!bookings.isEmpty()) {
             return bookings;
